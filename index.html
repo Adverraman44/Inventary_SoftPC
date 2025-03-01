@@ -13,19 +13,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         body {
-            background: url('software de computadoras.png') no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(to bottom, #0000ff, #87CEEB);
             font-family: 'Poppins', sans-serif;
+            color: white;
         }
     </style>
 </head>
 <body class="p-5">
     <div class="container">
-        <h1 class="text-center text-white text-3xl mb-4">Gestión de Software</h1>
-        <div class="text-center text-white text-xl" id="clock"></div>
+        <h1 class="text-center text-3xl mb-4">Gestión de Software</h1>
+        <div class="text-center text-xl" id="clock"></div>
         <button id="themeToggle" class="btn btn-secondary my-3">Modo Oscuro</button>
         
         <!-- Formulario de Registro -->
@@ -38,7 +39,7 @@
         </div>
         
         <!-- Tabla de Software -->
-        <table class="table table-striped bg-white">
+        <table class="table table-striped bg-white text-black">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -49,6 +50,9 @@
             </thead>
             <tbody id="tabla"></tbody>
         </table>
+        
+        <!-- Botón para descargar en PDF -->
+        <button id="descargarPDF" class="btn btn-success mt-3">Descargar Inventario en PDF</button>
     </div>
     
     <script>
@@ -90,6 +94,29 @@
             
             $('#themeToggle').click(function() {
                 $('body').toggleClass('bg-dark text-white');
+            });
+            
+            $('#descargarPDF').click(function() {
+                const { jsPDF } = window.jspdf;
+                let doc = new jsPDF();
+                doc.text("Inventario de Software 2015", 10, 10);
+                
+                let rows = [];
+                $('#tabla tr').each(function() {
+                    let row = [];
+                    $(this).find('td:not(:last-child)').each(function() {
+                        row.push($(this).text());
+                    });
+                    rows.push(row);
+                });
+                
+                let y = 20;
+                rows.forEach(row => {
+                    doc.text(row.join(' | '), 10, y);
+                    y += 10;
+                });
+                
+                doc.save("inventario_de_software_2015.pdf");
             });
         });
     </script>
